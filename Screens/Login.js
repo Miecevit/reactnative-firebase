@@ -9,17 +9,19 @@ import {
 } from 'react-native';
 import {firebase} from '../config.js';
 
+
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const loginUser = async () => {
+
+  const signIn = async () => {
 
     try{
 
       await firebase.auth().signInWithEmailAndPassword(email, password);
       Alert.alert("100KY - ToDo", "Giriş yapıldı.")
-
+      navigation.navigate("Home");
     }catch (error){
       console.log(error.message);
       Alert.alert("100KY - ToDo", `Hata oluştu: ${error.message}`);
@@ -43,7 +45,7 @@ export default function Login({ navigation }) {
         placeholder="Password"
         secureTextEntry
       />
-      <Button title="Login" onPress={loginUser} />
+      <Button title="Login" onPress={signIn} />
       <Button title="Signup" onPress={() => navigation.navigate('Signup')} />
     </View>
   );
