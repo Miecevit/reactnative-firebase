@@ -18,9 +18,11 @@ export default function Login({ navigation }) {
     try{
 
       await firebase.auth().signInWithEmailAndPassword(email, password);
+      Alert.alert("100KY - ToDo", "Giriş yapıldı.")
 
     }catch (error){
       console.log(error.message);
+      Alert.alert("100KY - ToDo", `Hata oluştu: ${error.message}`);
     }
    
   };

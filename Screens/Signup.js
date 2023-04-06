@@ -18,9 +18,11 @@ export default function Signup({ navigation }) {
     try{
 
       await firebase.auth().createUserWithEmailAndPassword(email, password);
-
+      Alert.alert('100KY - ToDo', 'Hesabınız oluşturuldu!');
     }catch(error){
+
       console.log(error.message);
+      Alert.alert('100KY - ToDO', `Hata olustu: ${error.message} `);
     }
 
   };
