@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import {firebase} from '../config.js';
+
 const Home = (props) => {
 
   const [todoList, setTodoList] = useState([]);
@@ -38,31 +40,31 @@ const Home = (props) => {
   }, [user]);
 
 
-  const addTodo = () => {
-
-    if(addData && addData.length > 0){
-      const timestamp = firebase.firestore.FieldValue.serverTimeStamp();
-      const user = firebase.auth().currentUser;
-
-        if(user){
-          const data = {
-            heading: addData,
-            createdAt: timestamp,
-            userId: user.uid,
-          };
-
-          todoRef
-            .add(data)
-            .then(() => {
-              setAddData('');
-              Keyboard.dismiss();
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        } 
-      }
+ const addTodo = () => {
+  // Check if addData has a value
+  if (addData && addData.length > 0) {
+    console.log(addData);
+    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+    const user = firebase.auth().currentUser;
+    if (user) {
+      const data = {
+        heading: addData,
+        createdAt: timestamp,
+        userId: user.uid, // Add user ID to the todo data
+      };
+      // Add the new todo to Firestore
+      todoRef
+        .add(data)
+        .then(() => {
+          setAddData(''); // Clear the addData state
+          Keyboard.dismiss(); // Hide the keyboard
+        })
+        .catch((error) => {
+          alert(error); // Show an error message if there is an error adding the todo
+        });
+    }
   }
+};
 
   return (
 
@@ -179,3 +181,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
+
+export default Home; 

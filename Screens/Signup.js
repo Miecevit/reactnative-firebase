@@ -13,6 +13,7 @@ export default function Signup({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+
   const signupUser = async () => {
 
     try{
