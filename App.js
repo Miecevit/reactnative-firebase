@@ -50,16 +50,27 @@ export default function App() {
       },
     }), []);
 
-
-
-
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} />
-      </Stack.Navigator>
-    </NavigationContainer>
+
+    <AuthContext.Provider value={authContextValue}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+        {user ? (
+          <>
+          <Stack.Screen name="Home" 
+            children={(props) => <Home {...props} user={user} />} 
+            />
+          </>
+        ) : (
+          <Stack.Screen name="Login" component={Login} />
+        )
+        }
+          
+          <Stack.Screen name="Signup" component={Signup} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
+
+
   );
 }
