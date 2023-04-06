@@ -10,7 +10,59 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Home = () => {
+const Home = (props) => {
+
+  const [todoList, setTodoList] = useState([]);
+  const todoRef = firebase.firestore().collection('ky_todo');
+  const [addData, setAddData] = useState('');
+  const {user} = props;
+
+  useEffect(() => {
+    if(!user) return;
+
+    todoRef
+      .where('userId', '===', user.uid)
+      .orderBy('createdAt', 'desc')
+      .onSnapshot((querySnapshot) => {
+        const todoList = [];
+        querySnapshot.forEach((doc) => {
+          const {heading} = doc.data();
+          todoList.push({
+            id: doc.id,
+            heading,
+          });
+        });
+        setTodoList(todoList);
+      })
+
+  }, [user]);
+
+
+  const addTodo = () => {
+
+    if(addData && addData.length > 0){
+      const timestamp = firebase.firestore.FieldValue.serverTimeStamp();
+      const user = firebase.auth().currentUser;
+
+        if(user){
+          const data = {
+            heading: addData,
+            createdAt: timestamp,
+            userId: user.uid,
+          };
+
+          todoRef
+            .add(data)
+            .then(() => {
+              setAddData('');
+              Keyboard.dismiss();
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } 
+      }
+  }
 
   return (
 
