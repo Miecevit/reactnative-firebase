@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 import Home from './Screens/Home';
+import Detail from './Screens/Detail';
 
 import {firebase} from './config.js';
 
@@ -65,22 +66,24 @@ export default function App() {
 
   return (
 
-    <AuthContext.Provider value={authContextValue}> //Tanımları bulunduran objemiz AuthContext componentine değişken olarak veriliyor.
-      <NavigationContainer> //Navigation yönetimi
+    <AuthContext.Provider value={authContextValue}> 
+      <NavigationContainer> 
         <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Signup" component={Signup} />
-          {user ? ( //Burada user olup olmadığını kontrol ediyoruz. Varsa (AUTHCONTEXT) Home ekranına yönlendiriyoruz
+          {user ? ( 
             <>
             <Stack.Screen name="Home" 
-              children={(props) => <Home {...props} /*--> Propların önceki hali varsa BOZMA*/ user={user} signOut={signOut} />} //user ve signout fonksiyonlarını prop olarak bu component'e gönder
+              children={(props) => <Home {...props} user={user} signOut={signOut} />} 
+              />
+            <Stack.Screen name="Detail"
+              children={(props) => <Detail {...props} signOut={signOut} />}
               />
             </>
           ) : (
             null
           )
           }
-            
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
           
         </Stack.Navigator>
       </NavigationContainer>

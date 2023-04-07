@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import {FontAwesome} from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/native';
 
 
 import { SafeAreaView } from 'react-native-safe-area-context'; //Ios cihazlarda güvenli ekran boşluğunu kendisi belirleyen component (çentik, yukardan aşağı çektiğimiz ayarların olduğu pili falan gösteren yer vb.)
@@ -25,6 +26,7 @@ const Home = (props) => {
   const [addData, setAddData] = useState(''); //Kullanıcının "input"la oluşturduğu todo öğesi
   const {user} = props; //proptan gelen (App.js STACK) user
   const {signOut} = props; //proptan gelen (App.js STACK) signOut fonksiyonu
+  const navigation = useNavigation();
 
   useEffect(() => { //useEffect her bu sayfa açıldığında devreye girer
 
@@ -117,7 +119,8 @@ const deleteTodo = (todo) => {
         numColumns={1}
         renderItem= {( {item} ) => (
           <View style={styles.container}>
-            
+            <TouchableOpacity style={styles.container}
+              onPress={() => navigation.navigate('Detail', {item})}>
             <Text style={styles.itemHeading}> {item.heading} 
             </Text>
             <FontAwesome
@@ -126,6 +129,7 @@ const deleteTodo = (todo) => {
               onPress={() => deleteTodo(item)}
               style={styles.todoIcon}
             />
+            </TouchableOpacity>
           </View>
         )}
         />
