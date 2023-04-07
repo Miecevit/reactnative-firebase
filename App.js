@@ -66,6 +66,8 @@ export default function App() {
     <AuthContext.Provider value={authContextValue}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} />
         {user ? (
           <>
           <Stack.Screen name="Home" 
@@ -73,11 +75,11 @@ export default function App() {
             />
           </>
         ) : (
-          <Stack.Screen name="Login" component={Login} />
+          null
         )
         }
           
-          <Stack.Screen name="Signup" component={Signup} />
+          
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>

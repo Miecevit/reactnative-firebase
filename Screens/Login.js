@@ -10,7 +10,7 @@ import {
 import {firebase} from '../config.js';
 
 
-export default function Login() {
+export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,7 +21,7 @@ export default function Login() {
 
       await firebase.auth().signInWithEmailAndPassword(email, password);
       Alert.alert("100KY - ToDo", "Giriş yapıldı.");
-
+      navigation.navigate("Home");
     }catch (error){
       console.log(error.message);
       Alert.alert("100KY - ToDo", `Hata oluştu: ${error.message}`);
