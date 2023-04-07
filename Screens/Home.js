@@ -9,6 +9,11 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
+
+import {FontAwesome} from '@expo/vector-icons';
+
+import { IconPicker } from '@grassper/react-native-icon-picker';
+
 import { SafeAreaView } from 'react-native-safe-area-context'; //Ios cihazlarda güvenli ekran boşluğunu kendisi belirleyen component (çentik, yukardan aşağı çektiğimiz ayarların olduğu pili falan gösteren yer vb.)
 
 import {firebase} from '../config.js'; //FIREBASE Giriş ayarlarımızı çağırıyoruz (MySQL kimlik gibi)
@@ -29,15 +34,15 @@ const Home = (props) => {
       .where('userId', '==', user.uid) //Bu koşulu gerçekleştiren yerde
       .orderBy('createdAt', 'desc') // createdAt'e göre sıralarak (azalan)
       .onSnapshot((querySnapshot) => { //veritabanındaki bilgileri al
-        const todoListesi = []; //todoListesi diye bir array oluştur (STANDAR ARRAY - UseState'siz)
+        const todoList = []; //todoListesi diye bir array oluştur (STANDAR ARRAY - UseState'siz)
         querySnapshot.forEach((doc) => { //veritabanından aldığımız her öğe için (map) öğere "doc" ismini vererek
           const {heading} = doc.data(); //heading değişkenine doc'un data kısmını yaz
-          todoListesi.push({ //todoListesi array'ine ekle
+          todoList.push({ //todoListesi array'ine ekle
             id: doc.id, //doc'taki id'yi
             heading, //doc'taki data kısmını heading olarak almıştık
           });
         });
-        setTodoList(todoListesi); //UseState'li array'e normal array'i eşitle
+        setTodoList(todoList); //UseState'li array'e normal array'i eşitle
       });
 
   }, [user]); //UseEffect çalışırken user objesi mevcut olsun
@@ -70,6 +75,20 @@ const Home = (props) => {
   }
 };
 
+const deleteTodo = (todo) => {
+  
+  todoRef
+    .doc(todo.id)
+    .delete()
+    .then(() => {
+      Alert.alert("100KY - ToDo", "Todo öğesi silindi.");
+    })
+    .catch((error) => {
+      Alert.alert("100KY - ToDo", "Öğe silinirken hata olustu ", error);
+    })
+
+};
+
   return (
 
     <SafeAreaView style={ {flex: 1} }>
@@ -98,8 +117,15 @@ const Home = (props) => {
         numColumns={1}
         renderItem= {( {item} ) => (
           <View style={styles.container}>
+            
             <Text style={styles.itemHeading}> {item.heading} 
             </Text>
+            <FontAwesome
+              name="trash-o"
+              color="red"
+              onPress={() => deleteTodo(item)}
+              style={styles.todoIcon}
+            />
           </View>
         )}
         />
@@ -120,6 +146,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   textHeadingContainer: {
     paddingVertical: 20,
