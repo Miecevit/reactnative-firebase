@@ -50,6 +50,17 @@ export default function App() {
       },
     }), []);
 
+
+    const signOut = () => {
+
+      firebase.auth().signOut().then( () => {
+        console.log("Signed Out Successfully.");
+      }).catch((error) => {
+        console.log("Error signing out: ", error);
+      })
+
+    }
+
   return (
 
     <AuthContext.Provider value={authContextValue}>
@@ -58,7 +69,7 @@ export default function App() {
         {user ? (
           <>
           <Stack.Screen name="Home" 
-            children={(props) => <Home {...props} user={user} />} 
+            children={(props) => <Home {...props} user={user} signOut={signOut} />} 
             />
           </>
         ) : (
