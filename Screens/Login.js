@@ -20,7 +20,7 @@ export default function Login() {
     try{
 
       await firebase.auth().signInWithEmailAndPassword(email, password);
-      Alert.alert("100KY - ToDo", "Giriş yapıldı.")
+      Alert.alert("100KY - ToDo", "Giriş yapıldı.");
 
     }catch (error){
       console.log(error.message);

@@ -21,9 +21,10 @@ const Home = (props) => {
 
   useEffect(() => {
     if(!user) return;
-
+    console.log(user.uid);
+    console.log(typeof(user.uid));
     todoRef
-      .where('userId', '===', user.uid)
+      .where('userId', '==', user.uid)
       .orderBy('createdAt', 'desc')
       .onSnapshot((querySnapshot) => {
         const todoList = [];
@@ -35,7 +36,7 @@ const Home = (props) => {
           });
         });
         setTodoList(todoList);
-      })
+      });
 
   }, [user]);
 
