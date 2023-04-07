@@ -8,11 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  Alert,
 } from 'react-native';
 
 import {FontAwesome} from '@expo/vector-icons';
 
-import { IconPicker } from '@grassper/react-native-icon-picker';
 
 import { SafeAreaView } from 'react-native-safe-area-context'; //Ios cihazlarda güvenli ekran boşluğunu kendisi belirleyen component (çentik, yukardan aşağı çektiğimiz ayarların olduğu pili falan gösteren yer vb.)
 
