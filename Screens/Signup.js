@@ -1,3 +1,5 @@
+
+//IMPORTLAR
 import React, { useState } from 'react';
 import {
   View,
@@ -9,7 +11,7 @@ import {
 } from 'react-native';
 import {firebase} from '../config.js';
 
-export default function Signup({ navigation }) {
+export default function Signup({ navigation }) { //Navigation App.js STACK'ten geliyor
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,7 +22,7 @@ export default function Signup({ navigation }) {
 
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       Alert.alert('100KY - ToDo', 'Hesabınız oluşturuldu!');
-      navigation.navigate("Login");
+      navigation.navigate("Login"); //Hesap başarılı oluşturulduysa LOGIN'e git
     }catch(error){
 
       console.log(error.message);
@@ -45,8 +47,8 @@ export default function Signup({ navigation }) {
         placeholder="Password"
         secureTextEntry
       />
-      <Button title="Signup" onPress={signupUser} />
-      <Button title="Login" onPress={() => navigation.navigate('Login')} />
+      <Button title="Signup" onPress={signupUser} /> 
+      <Button title="Login" onPress={() => navigation.navigate('Login')} /> 
     </View>
   );
 }

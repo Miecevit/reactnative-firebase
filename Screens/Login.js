@@ -1,3 +1,4 @@
+//IMPORTLAR
 import React, { useState } from 'react';
 import {
   View,
@@ -10,18 +11,18 @@ import {
 import {firebase} from '../config.js';
 
 
-export default function Login({navigation}) {
+export default function Login({navigation}) { //Navigation prop olarak App.js STACK yapısından geliyor
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
 
-  const signIn = async () => {
+  const signIn = async () => { //Giriş fonksiyonu
 
     try{
 
       await firebase.auth().signInWithEmailAndPassword(email, password);
       Alert.alert("100KY - ToDo", "Giriş yapıldı.");
-      navigation.navigate("Home");
+      navigation.navigate("Home"); //Giriş başarılı ise Home'a gönder
     }catch (error){
       console.log(error.message);
       Alert.alert("100KY - ToDo", `Hata oluştu: ${error.message}`);
@@ -45,8 +46,8 @@ export default function Login({navigation}) {
         placeholder="Password"
         secureTextEntry
       />
-      <Button title="Login" onPress={signIn} />
-      <Button title="Signup" onPress={() => navigation.navigate('Signup')} />
+      <Button title="Login" onPress={signIn} /> 
+      <Button title="Signup" onPress={() => navigation.navigate('Signup')} /> 
     </View>
   );
 }

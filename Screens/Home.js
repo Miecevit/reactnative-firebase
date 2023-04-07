@@ -1,3 +1,4 @@
+//IMPORTLAR
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -8,61 +9,62 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context'; //Ios cihazlarda güvenli ekran boşluğunu kendisi belirleyen component (çentik, yukardan aşağı çektiğimiz ayarların olduğu pili falan gösteren yer vb.)
 
-import {firebase} from '../config.js';
+import {firebase} from '../config.js'; //FIREBASE Giriş ayarlarımızı çağırıyoruz (MySQL kimlik gibi)
 
 const Home = (props) => {
 
-  const [todoList, setTodoList] = useState([]);
-  const todoRef = firebase.firestore().collection('ky_todo');
-  const [addData, setAddData] = useState('');
-  const {user} = props;
-  const {signOut} = props;
+  const [todoList, setTodoList] = useState([]); //Kullanıcının veritabanındaki todo öğelerini tutacak array
+  const todoRef = firebase.firestore().collection('ky_todo'); //Bağlantı kimliği (mysql.query gibi)
+  const [addData, setAddData] = useState(''); //Kullanıcının "input"la oluşturduğu todo öğesi
+  const {user} = props; //proptan gelen (App.js STACK) user
+  const {signOut} = props; //proptan gelen (App.js STACK) signOut fonksiyonu
 
-  useEffect(() => {
-    if(!user) return;
-    console.log(user.uid);
-    console.log(typeof(user.uid));
-    todoRef
-      .where('userId', '==', user.uid)
-      .orderBy('createdAt', 'desc')
-      .onSnapshot((querySnapshot) => {
-        const todoList = [];
-        querySnapshot.forEach((doc) => {
-          const {heading} = doc.data();
-          todoList.push({
-            id: doc.id,
-            heading,
+  useEffect(() => { //useEffect her bu sayfa açıldığında devreye girer
+
+    if(!user) return; // eğer user yoksa (auth mevcut değil) boş dön
+
+    todoRef //Kimlik objesine emirler veriyoruz
+      .where('userId', '==', user.uid) //Bu koşulu gerçekleştiren yerde
+      .orderBy('createdAt', 'desc') // createdAt'e göre sıralarak (azalan)
+      .onSnapshot((querySnapshot) => { //veritabanındaki bilgileri al
+        const todoListesi = []; //todoListesi diye bir array oluştur (STANDAR ARRAY - UseState'siz)
+        querySnapshot.forEach((doc) => { //veritabanından aldığımız her öğe için (map) öğere "doc" ismini vererek
+          const {heading} = doc.data(); //heading değişkenine doc'un data kısmını yaz
+          todoListesi.push({ //todoListesi array'ine ekle
+            id: doc.id, //doc'taki id'yi
+            heading, //doc'taki data kısmını heading olarak almıştık
           });
         });
-        setTodoList(todoList);
+        setTodoList(todoListesi); //UseState'li array'e normal array'i eşitle
       });
 
-  }, [user]);
+  }, [user]); //UseEffect çalışırken user objesi mevcut olsun
 
 
  const addTodo = () => {
-  // Check if addData has a value
-  if (addData && addData.length > 0) {
-    console.log(addData);
-    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-    const user = firebase.auth().currentUser;
-    if (user) {
-      const data = {
-        heading: addData,
-        createdAt: timestamp,
-        userId: user.uid, // Add user ID to the todo data
+
+  if (addData && addData.length > 0) { //Kullanicinin girdiği bilgi varsa ve boş değilse
+
+    const timestamp = firebase.firestore.FieldValue.serverTimestamp(); //server'ın saat bilgisini al
+    const user = firebase.auth().currentUser; //firebase üzerine user kontrolü varsa getir
+    if (user) { //Eğer user tamamsa
+      const data = { //data değişkeni JSON
+        heading: addData, // heading'e kullanıcın girdiği yazıyı yaz
+        createdAt: timestamp, //createdAt'e server'ın saatini koy
+        userId: user.uid, //userId'ye kullanıcı id kodunu yaz
       };
-      // Add the new todo to Firestore
+      // Oluşturduğumuz json paketini (data) todoRef'e veritabanına eklemesi için vereceğiz
       todoRef
-        .add(data)
-        .then(() => {
-          setAddData(''); // Clear the addData state
-          Keyboard.dismiss(); // Hide the keyboard
+        .add(data) //add fonksiyonu (INSERT INTO VALUE)
+        .then(() => { //Ekledikten sonra
+          setAddData(''); // useState'li addData değişkenini boş hale getir
+          Keyboard.dismiss(); // Ekranda klavye varsa yok et
         })
         .catch((error) => {
-          alert(error); // Show an error message if there is an error adding the todo
+          alert(error);
+
         });
     }
   }

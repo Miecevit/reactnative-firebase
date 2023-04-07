@@ -1,3 +1,5 @@
+
+//IMPORTLAR
 import React from 'react';
 import {useState, useEffect, useMemo} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,16 +10,16 @@ import Home from './Screens/Home';
 
 import {firebase} from './config.js';
 
-
+//Stack - Sayfa geçişlerini sağlamak için
 const Stack = createStackNavigator();
 
-const AuthContext = React.createContext();
+const AuthContext = React.createContext(); //Bu obje her uygulama açılışında auth etmek için
 
 export default function App() {
 
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
+  useEffect(() => { //Girişteki auth kontrolü
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if(user){
         setUser(user);
@@ -30,7 +32,7 @@ export default function App() {
     };
   }, []);
 
-  const authContextValue = useMemo(
+  const authContextValue = useMemo( //Bu obje auth kontrolünde kullanılmak için oluşturuluyor. İçerisindeki bilgiler giriş ve çıkış fonksiyonlarını tanımlıyor
     () => ({
 
       signIn: async (email, password) => {
@@ -51,7 +53,7 @@ export default function App() {
     }), []);
 
 
-    const signOut = () => {
+    const signOut = () => { //SignOut Fonksiyonu
 
       firebase.auth().signOut().then( () => {
         console.log("Signed Out Successfully.");
@@ -63,22 +65,22 @@ export default function App() {
 
   return (
 
-    <AuthContext.Provider value={authContextValue}>
-      <NavigationContainer>
+    <AuthContext.Provider value={authContextValue}> //Tanımları bulunduran objemiz AuthContext componentine değişken olarak veriliyor.
+      <NavigationContainer> //Navigation yönetimi
         <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} />
-        {user ? (
-          <>
-          <Stack.Screen name="Home" 
-            children={(props) => <Home {...props} user={user} signOut={signOut} />} 
-            />
-          </>
-        ) : (
-          null
-        )
-        }
-          
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
+          {user ? ( //Burada user olup olmadığını kontrol ediyoruz. Varsa (AUTHCONTEXT) Home ekranına yönlendiriyoruz
+            <>
+            <Stack.Screen name="Home" 
+              children={(props) => <Home {...props} /*--> Propların önceki hali varsa BOZMA*/ user={user} signOut={signOut} />} //user ve signout fonksiyonlarını prop olarak bu component'e gönder
+              />
+            </>
+          ) : (
+            null
+          )
+          }
+            
           
         </Stack.Navigator>
       </NavigationContainer>
