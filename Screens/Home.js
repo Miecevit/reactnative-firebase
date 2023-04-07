@@ -18,6 +18,7 @@ const Home = (props) => {
   const todoRef = firebase.firestore().collection('ky_todo');
   const [addData, setAddData] = useState('');
   const {user} = props;
+  const {signOut} = props;
 
   useEffect(() => {
     if(!user) return;
@@ -95,10 +96,14 @@ const Home = (props) => {
         numColumns={1}
         renderItem= {( {item} ) => (
           <View style={styles.container}>
-            <Text style={styles.itemHeading}> {item.heading} </Text>
+            <Text style={styles.itemHeading}> {item.heading} 
+            </Text>
           </View>
         )}
         />
+        <TouchableOpacity style={styles.buttonSignOut} onPress={signOut}>
+          <Text style={styles.buttonSignOutText}>SignOut</Text>
+        </TouchableOpacity>
     </SafeAreaView>
   );
 
